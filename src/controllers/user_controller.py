@@ -21,4 +21,4 @@ class UserController:
 
     def shutdown(self):
         """ Close database connection """
-        self.dao.close()
+        self.dao.shutdown()
