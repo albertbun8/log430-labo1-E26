@@ -54,3 +54,7 @@ class UserDAOMongo:
         self.collection.deleteOne(
             {"id": user_id}
         )
+
+    def close(self):
+        """ Close MongoDB connection """
+        self.client.close()
