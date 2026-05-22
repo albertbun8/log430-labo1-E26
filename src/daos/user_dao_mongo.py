@@ -1,6 +1,7 @@
 import os
 from dotenv import load_dotenv
 from pymongo import MongoClient
+from bson import ObjectId
 from models.user import User
 
 class UserDAOMongo:
@@ -20,11 +21,10 @@ class UserDAOMongo:
         self.collection = self.db["users"]
 
     def select_all(self):
-        """ Select all users from MongoDB """
         rows = self.collection.find()
         return [
             User(
-                row.get("id"),
+                str(row.get("_id")),
                 row.get("name"),
                 row.get("email")
             )
@@ -32,28 +32,29 @@ class UserDAOMongo:
         ]
 
     def insert(self, user):
-        """ Insert given user into MongoDB """
-        self.collection.insert_one({
-            "id": user.id,
+        result = self.collection.insert_one({
             "name": user.name,
             "email": user.email
         })
-        
+        return str(result.inserted_id)
 
     def update(self, user):
-        """ Update given user in MongoDB """
-        self.collection.updateOne(
-            {"id": user.id},
-            {
-                "$set": { "name": user.name, "email": user.email }
-            }
+        self.collection.update_one(
+            {"_id": ObjectId(user.id)},
+            {"$set": {
+                "name": user.name,
+                "email": user.email
+            }}
         )
 
     def delete(self, user_id):
-        """ Delete user from MongoDB with given user ID """
-        self.collection.deleteOne(
-            {"id": user_id}
-        )
+        self.collection.delete_one({
+            "_id": ObjectId(user_id)
+        })
+
+    def delete_all(self):
+        """ Empty users collection in MongoDB """
+        self.collection.delete_many({})
 
     def close(self):
         """ Close MongoDB connection """

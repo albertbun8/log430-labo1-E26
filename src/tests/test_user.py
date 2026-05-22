@@ -32,11 +32,11 @@ def test_user_update():
     dao.delete(assigned_id)
 
 def test_user_delete():
-    user = User(None, 'Joe Test', 'joetest@example.com')
+    user = User(None, 'Joe Test', 'joetest1@example.com')
     assigned_id = dao.insert(user)
     dao.delete(assigned_id)
-
     new_dao = UserDAOMongo()
     user_list = new_dao.select_all()
-    emails = [u.email for u in user_list]
-    assert user.email not in emails
+    ids = [u.id for u in user_list]
+
+    assert assigned_id not in ids
