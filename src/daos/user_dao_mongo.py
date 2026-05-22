@@ -20,6 +20,14 @@ class UserDAOMongo:
         self.db = self.client[db_name]
         self.collection = self.db["users"]
 
+    def seed(self):
+        if self.collection.count_documents({}) == 0:
+            self.collection.insert_many([
+                {"name": "User A", "email": "Email A"},
+                {"name": "User B", "email": "Email B"},
+                {"name": "User C", "email": "Email C"},
+            ])
+
     def select_all(self):
         rows = self.collection.find()
         return [

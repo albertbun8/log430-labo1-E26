@@ -5,6 +5,7 @@ import time
 dao = UserDAOMongo()
 
 def test_user_select():
+    dao.seed()
     user_list = dao.select_all()
     assert len(user_list) >= 3
 
